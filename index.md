@@ -26,3 +26,4 @@ If you would like to change the watering cycle click here.
 
 ## References
 
+Click [here](./references.md) for the references page.
