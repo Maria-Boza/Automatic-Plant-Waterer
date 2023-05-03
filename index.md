@@ -24,7 +24,7 @@ The current humidity in the air is:
 * 10 ml of water pumped
 
 
-If you would like to change the watering cycle click here.
+If you would like to change the watering cycle click [here](./water-cycle.md) .
 
 ## How to 
 
