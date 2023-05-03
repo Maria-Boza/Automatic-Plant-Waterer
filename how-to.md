@@ -39,8 +39,10 @@ This project was to create an automatic waterer for a plant. It consists of 4 di
 * Wires
 * Resistors
 * 3D Printed pot 
+* 3D Printed reservoir
 * Soil
 * Seeds
+* Tube clamps
 
 ## Schematics 
 
