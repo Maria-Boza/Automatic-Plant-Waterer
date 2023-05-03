@@ -1,24 +1,24 @@
 # Automatic Plant Waterer
 
-This projects has been created by Maria Boza (mib57) and Ashley Heckman (agh93) for Cornells ECE5725 class
+This projects has been created by Maria Boza (mib57) and Ashley Heckman (agh93) for Cornell's ECE5725 class.
 
 ## Live feed
 
-This plant you see here is a **Marigold**
+The plant you see growing here is a **Marigold**
 
 ## Moisture Levels 
 
-The moister level of the soil is currently: 
+The current moister level of the soil is: 
 
 ## Temperature
 
-The current temperature is: 
+The current ambient temperature is: 
 
 ## Humidity 
 
 The current humidity in the air is: 
 
-## Watering Cycle
+## Current Watering Cycle
 
 * Once a day 
 * 10 ml of water pumped
@@ -28,5 +28,5 @@ If you would like to change the watering cycle click [here](./water-cycle.md) .
 
 ## How to 
 
-If you would like to learn how to create on of your own we have added it [here](./how-to.md)
+If you would like to learn how to create one of your own we have added it [here](./how-to.md)
 
