@@ -34,6 +34,7 @@ This project was to create an automatic waterer for a plant. It consists of 4 di
   Used to create live feed of the plant
   
 ## Other Parts
+* Power supply
 * Breadboard
 * Tubing
 * Wires
