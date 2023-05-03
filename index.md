@@ -25,6 +25,7 @@ The current humidity in the air is:
 
 If you would like to change the watering cycle click here.
 
-## References
+## How to 
 
-Click [here](./references.md) for the references page.
+If you would like to learn how to create on of your own we have added it [here](./how-to.md)
+
