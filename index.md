@@ -19,8 +19,9 @@ The current humidity in the air is:
 
 ## Watering Cycle
 
-*Once a day 
-*5 ml
+* Once a day 
+* 5 ml
+
 
 If you would like to change the watering cycle click here.
 
