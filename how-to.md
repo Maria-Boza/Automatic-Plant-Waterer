@@ -4,12 +4,16 @@ This project was to create an automatic waterer for a plant. It consists of 4 di
 
 ## Electronic Parts
 * Raspberry Pi 4 (RPi)
+  
   Basis of our project. It is the brains of the operation and controls everything
 * PiTFT 
+  
   Display that is used for the user interface
 * Moisture Sensor
+  
   Calculates the moisture of the soil
 * Humidity Sensor
+  
   Calculates the humidity in the air 
 * Temperature Sensor
   
