@@ -17,6 +17,28 @@ This project was to create an automatic waterer for a plant. It consists of 4 di
   Calculates the humidity in the air 
 * Temperature Sensor
   
+  Part of the same electronics of the humidity sensor that measures abient temperature 
+* Light Sensor
+
+  Calculates how much sunlight the plant has gotten  
+* Water Pump
+  
+  Pumps water from a reservoir to the plant  
+* Motor Driver
+  
+  Used to control the water pump
+* Camera
+  
+  Used to create live feed of the plant
+  
+## Other Parts
+* Breadboard
+* Tubing
+* Wires
+* Resistors
+* 3D Printed pot 
+* Soil
+* Seeds
 
 ## Schematics 
 
