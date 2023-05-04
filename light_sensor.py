@@ -4,7 +4,7 @@ import time
 GPIO.setmode(GPIO.BOARD)
 
 #define the pin that goes to the circuit
-pin = 7
+pin = 13
 
 def rc_time (pin_to_circuit):
     count = 0
