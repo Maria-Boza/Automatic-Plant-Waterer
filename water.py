@@ -67,8 +67,8 @@ pwm26.start(20)
 currently_watering = False
 
 # Keep track of the time that we last started and stopped the water
-last_water_start = time.localtime(time.time())
-last_water_end = time.localtime(time.time())
+last_water_start = time.time()
+last_water_end = time.time()
 
 # Start water function
 def start_water():
@@ -82,10 +82,10 @@ def start_water():
 
     # Update the last water start time
     global last_water_start
-    last_water_start = time.localtime(time.time())
+    last_water_start = time.time()
 
     # Print
-    print("Water Started")
+    print("Water Started: " + str(time.localtime(last_water_start)[1]) + "/" + str(time.localtime(last_water_start)[2]) + " @ " + str(time.localtime(last_water_start)[3]) + ":" + str(time.localtime(last_water_start)[4]) + ":" + str(time.localtime(last_water_start)[5]))
 
 # Stop water function
 def stop_water():
@@ -99,10 +99,10 @@ def stop_water():
 
     # Update the last water stop time
     global last_water_end
-    last_water_end = time.localtime(time.time())
+    last_water_end = time.time()
 
     # Print
-    print("Water Stopped")
+    print("Water Stopped: " + str(time.localtime(last_water_end)[1]) + "/" + str(time.localtime(last_water_end)[2]) + " @ " + str(time.localtime(last_water_end)[3]) + ":" + str(time.localtime(last_water_end)[4]) + ":" + str(time.localtime(last_water_end)[5]))
 
 #########################################################################################################
 # Quit Button
@@ -192,8 +192,8 @@ def display_home():
 
     # Display time the plant was last watered
     if not currently_watering:
-        last_water_start_text = str(last_water_start[1]) + "/" + str(last_water_start[2]) + " " + str((last_water_start[3], last_water_start[3] - 12)[last_water_start[3] > 12]) + (":", ":0")[last_water_start[4] < 10] + str(last_water_start[4]) + (" am", " pm")[last_water_start[3] > 12]
-        last_water_end_text = str(last_water_end[1]) + "/" + str(last_water_end[2]) + " " + str((last_water_end[3], last_water_end[3] - 12)[last_water_end[3] > 12]) + (":", ":0")[last_water_end[4] < 10] + str(last_water_end[4]) + (" am", " pm")[last_water_end[3] > 12]
+        last_water_start_text = str(time.localtime(last_water_start)[1]) + "/" + str(time.localtime(last_water_start)[2]) + " " + str((time.localtime(last_water_start)[3], time.localtime(last_water_start)[3] - 12)[time.localtime(last_water_start)[3] > 12]) + (":", ":0")[time.localtime(last_water_start)[4] < 10] + str(time.localtime(last_water_start)[4]) + (" am", " pm")[time.localtime(last_water_start)[3] > 12]
+        last_water_end_text = str(time.localtime(last_water_end)[1]) + "/" + str(time.localtime(last_water_end)[2]) + " " + str((time.localtime(last_water_end)[3], time.localtime(last_water_end)[3] - 12)[time.localtime(last_water_end)[3] > 12]) + (":", ":0")[time.localtime(last_water_end)[4] < 10] + str(time.localtime(last_water_end)[4]) + (" am", " pm")[time.localtime(last_water_end)[3] > 12]
         water_text = last_water_start_text + " - " + last_water_end_text
         water_text_surface = body.render(water_text, True, white)
         water_rect = water_text_surface.get_rect(center = (int(width/2), 140))
@@ -302,11 +302,10 @@ def display_set_schedule1():
 control_buttons2 = {"Set":(int(width/4), 220), "Back":(int(2*width/4), 220), "Cancel":(int(3*width/4), 220)}
 control_buttons2_rect = {}
 
-arrow_buttons = {"U_thous":((139,105), (142,100), (145,105)), "U_hund":((151,105), (154,100), (157,105)), 
-                 "U_ten":((162,105), (165,100), (168,105)), "U_one":((173,105), (176,100), (179,105)),
-                 "D_thous":((139,110), (142,115), (145,110)), "D_hund":((151,110), (154,115), (157,110)), 
-                 "D_ten":((162,110), (165,115), (168,110)), "D_one":((173,110), (176,115), (179,110))}
-arrow_buttons_rect = {}
+moisture_buttons = {"U_hund":((138,105), (141,100), (144,105)), "U_ten":((149,105), (152,100), (155,105)), "U_one":((160,105), (163,100), (166,105)),
+                    "D_hund":((138,110), (141,115), (144,110)), "D_ten":((149,110), (152,115), (155,110)), "D_one":((160,110), (163,115), (166,110))}
+                 
+moisture_buttons_rect = {}
 
 interval_arrows = {"U_w_ten":((45,90), (48,85), (51,90)), "U_w_one":((56,90), (59,85), (62,90)), 
                    "U_w_unit":((95,90), (100,85), (105,90)), "U_b_ten":((185,90), (188,85), (191,90)), 
@@ -317,9 +316,9 @@ interval_arrows = {"U_w_ten":((45,90), (48,85), (51,90)), "U_w_one":((56,90), (5
 interval_arrows_rect = {}
 
 interval_units = ("seconds", "minutes", "hours", "days")
-interval_w_time_selected = 1
-interval_b_time_selected = 2
-interval_w_time_selected_tent = 1
+interval_w_time_selected = 0
+interval_b_time_selected = 1
+interval_w_time_selected_tent = 0
 interval_b_time_selected_tent = 2
 
 moisture_thous = 0
@@ -328,11 +327,32 @@ moisture_ten = 0
 moisture_one = 0
 
 interval_time_b_ten = 0
-interval_time_b_one = 0
+interval_time_b_one = 1
 interval_time_w_ten = 0
-interval_time_w_one = 0
-interval_b_time = 0
-interval_w_time = 0
+interval_time_w_one = 5
+interval_b_time = 10*interval_time_b_ten + interval_time_b_one
+interval_w_time = 10*interval_time_w_ten + interval_time_w_one
+
+# The time for each watering is just the watering time that the user specifies
+water_time_sec = 10*interval_time_w_ten + interval_time_w_one
+if interval_w_time_selected > 0:
+    water_time_sec *= 60
+if interval_w_time_selected > 1:
+    water_time_sec *= 60
+if interval_w_time_selected > 2:
+    water_time_sec *= 24
+
+# The time between waterings is equal to the "every ___" time minus the time we want to water for
+# For example, if we want to water the plant for 1 second every 5 seconds, we would
+# water for 1 second, wait for 4 seconds, water for 1 second, wait for 4 seconds, etc.
+between_time_sec = 10*interval_time_b_ten + interval_time_b_one
+if interval_b_time_selected > 0:
+    between_time_sec *= 60
+if interval_b_time_selected > 1:
+    between_time_sec *= 60
+if interval_b_time_selected > 2:
+    between_time_sec *= 24
+between_time_sec -= water_time_sec
 
 # Display the GUI to edit schedule page (screen 2)
 def display_set_schedule2():
@@ -365,7 +385,7 @@ def display_set_schedule2():
     elif moisture_selected:
         moisture_sel1_surface = body.render("The system will automatically water the plant", True, white)
         moisture_sel2_surface = body.render("when the soil moisture level drops below", True, white)
-        moisture_sel3_surface = body.render(str(moisture_thous) + " " + str(moisture_hund) + " " + str(moisture_ten) + " " + str(moisture_one), True, white)
+        moisture_sel3_surface = body.render(str(moisture_hund) + " " + str(moisture_ten) + " " + str(moisture_one) + " %", True, white)
         moisture_sel4_surface = body.render("Click set to save these changes.", True, white)
         moisture_sel5_surface = body.render("Click back to select a different mode.", True, white)
         moisture_sel6_surface = body.render("Click cancel to return to the homescreen", True, white)
@@ -379,24 +399,20 @@ def display_set_schedule2():
         screen.blit(moisture_sel7_surface, moisture_sel7_surface.get_rect(center = (int(width/2), 185)))
 
         # Diplay the number control arrows
-        for label, tri_pos in arrow_buttons.items():
-            if (label == "U_thous"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_thous < 9], tri_pos)
-            elif (label == "U_hund"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_hund < 9], tri_pos)
+        for label, tri_pos in moisture_buttons.items():
+            if (label == "U_hund"):
+                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_hund < 1], tri_pos)
             elif (label == "U_ten"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_ten < 9], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_ten < 9 and moisture_hund < 1], tri_pos)
             elif (label == "U_one"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_one < 9], tri_pos)
-            elif (label == "D_thous"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_thous > 0], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[moisture_one < 9 and moisture_hund < 1], tri_pos)
             elif (label == "D_hund"):
                 tri = pygame.draw.polygon(screen, (nsel, white)[moisture_hund > 0], tri_pos)
             elif (label == "D_ten"):
                 tri = pygame.draw.polygon(screen, (nsel, white)[moisture_ten > 0], tri_pos)
             elif (label == "D_one"):
                 tri = pygame.draw.polygon(screen, (nsel, white)[moisture_one > 0], tri_pos)
-            arrow_buttons_rect[label] = tri
+            moisture_buttons_rect[label] = tri
 
     # If user selected interval mode, prompt for desired watering interval
     elif intervals_selected:
@@ -426,7 +442,7 @@ def display_set_schedule2():
             elif (label == "U_w_one"):
                 tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_w_one < 9], tri_pos)
             elif (label == "U_w_unit"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[interval_w_time_selected_tent < 3], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[interval_w_time_selected_tent < 3 and ((interval_w_time_selected_tent + 1) <= interval_b_time_selected_tent)], tri_pos)
             elif (label == "U_b_ten"):
                 tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_b_ten < 5], tri_pos)
             elif (label == "U_b_one"):
@@ -435,25 +451,31 @@ def display_set_schedule2():
                 tri = pygame.draw.polygon(screen, (nsel, white)[interval_b_time_selected_tent < 3], tri_pos)
 
             elif (label == "D_w_ten"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_w_ten > 0], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_w_ten > 0 and (10*interval_time_w_ten + interval_time_w_one) - 10 > 0], tri_pos)
             elif (label == "D_w_one"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_w_one > 0], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_w_one > 0 and (10*interval_time_w_ten + interval_time_w_one) - 1 > 0], tri_pos)
             elif (label == "D_w_unit"):
                 tri = pygame.draw.polygon(screen, (nsel, white)[interval_w_time_selected_tent > 0], tri_pos)
             elif (label == "D_b_ten"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_b_ten > 0], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_b_ten > 0 and (10*interval_time_b_ten + interval_time_b_one) - 10 > 0], tri_pos)
             elif (label == "D_b_one"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_b_one > 0], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[interval_time_b_one > 0 and (10*interval_time_b_ten + interval_time_b_one) - 1 > 0], tri_pos)
             elif (label == "D_b_unit"):
-                tri = pygame.draw.polygon(screen, (nsel, white)[interval_b_time_selected_tent > 0], tri_pos)
+                tri = pygame.draw.polygon(screen, (nsel, white)[interval_b_time_selected_tent > 0 and (interval_w_time_selected_tent <= (interval_b_time_selected_tent - 1))], tri_pos)
             interval_arrows_rect[label] = tri
             
     # Display the control buttons
     for button_text, text_pos in control_buttons2.items():
-      text_surface = body.render(button_text, True, white)
-      rect = text_surface.get_rect(center = text_pos)
-      screen.blit(text_surface, rect)
-      control_buttons2_rect[button_text] = rect
+        if (intervals_selected and interval_w_time_selected_tent == interval_b_time_selected_tent and 10*interval_time_w_ten + interval_time_w_one >= 10*interval_time_b_ten + interval_time_b_one and button_text == "Set"):
+            text_surface = body.render(button_text, True, nsel)
+            rect = text_surface.get_rect(center = text_pos)
+            screen.blit(text_surface, rect)
+            control_buttons2_rect[button_text] = rect
+        else:
+            text_surface = body.render(button_text, True, white)
+            rect = text_surface.get_rect(center = text_pos)
+            screen.blit(text_surface, rect)
+            control_buttons2_rect[button_text] = rect
 
     # Display the new screen
     pygame.display.flip()
@@ -493,6 +515,7 @@ while code_run:
                         if (text == "Edit Schedule"):
                             print("Edit Schedule: Advancing to 'Select Mode' Screen")
                             screen_num = 1
+                            stop_water()
                         # Otherwise, if the user wants to start or stop the water (and we're in manual watering mode),
                         # start/stop the water pump
                         elif (text == "Start/Stop Water"):
@@ -501,6 +524,14 @@ while code_run:
                                     stop_water()
                                 else:
                                   start_water()
+
+        if schedule_selected == 2:
+            if not currently_watering:
+                if time.time() >= last_water_end + between_time_sec:
+                    start_water()
+            else:
+                if time.time() >= last_water_start + water_time_sec:
+                    stop_water()
 
     ################################################
     # GUI Select Mode Functionality
@@ -571,21 +602,25 @@ while code_run:
                 for (text, rect) in control_buttons2_rect.items():
                     if (rect.collidepoint(pos)):
                         if (text == "Set"):
-                            screen_num = 0
                             if manual_selected:
+                                screen_num = 0
                                 schedule_selected = 0
                                 print("Manual Mode Set, Returning to Homepage")   
                             elif moisture_selected:
+                                screen_num = 0
                                 schedule_selected = 1
-                                desired_moisture = 1000*moisture_thous + 100*moisture_hund + 10*moisture_ten + moisture_one
+                                desired_moisture = 100*moisture_hund + 10*moisture_ten + moisture_one
                                 print("Moisture Mode Selected, Returning to Homepage")
                             else:
-                                schedule_selected = 2
-                                interval_b_time = 10*interval_time_b_ten + interval_time_b_one
-                                interval_w_time = 10*interval_time_w_ten + interval_time_w_one
-                                interval_b_time_selected = interval_b_time_selected_tent
-                                interval_w_time_selected = interval_w_time_selected_tent
-                                print("Interval Mode Selected, Returning to Homepage")
+                                if not (interval_w_time_selected_tent == interval_b_time_selected_tent and 10*interval_time_b_ten + interval_time_b_one <= 10*interval_time_w_ten + interval_time_w_one):
+                                    screen_num = 0
+                                    schedule_selected = 2
+                                    interval_b_time = 10*interval_time_b_ten + interval_time_b_one
+                                    interval_w_time = 10*interval_time_w_ten + interval_time_w_one
+                                    interval_b_time_selected = interval_b_time_selected_tent
+                                    interval_w_time_selected = interval_w_time_selected_tent
+                                    print("Interval Mode Selected, Returning to Homepage")
+                                    start_water()
                         elif (text == "Back"):
                             if moisture_selected:
                                 moisture_thous = int(desired_moisture/1000)
@@ -619,23 +654,19 @@ while code_run:
                 
                 # If we're editing the desired moisture level, have arrows increase or decrease the desired moisture level
                 if moisture_selected:
-                    for (text, rect) in arrow_buttons_rect.items():
+                    for (text, rect) in moisture_buttons_rect.items():
                         if (rect.collidepoint(pos)):
-                            if (text == "U_thous"):
-                                if moisture_thous < 9:
-                                  moisture_thous += 1
-                            elif (text == "U_hund"):
-                                if moisture_hund < 9:
+                            if (text == "U_hund"):
+                                if moisture_hund < 1:
                                     moisture_hund += 1
+                                    moisture_ten = 0
+                                    moisture_one = 0
                             elif (text == "U_ten"):
-                                if moisture_ten < 9:
+                                if moisture_ten < 9 and moisture_hund < 1:
                                     moisture_ten += 1
                             elif (text == "U_one"):
-                                if moisture_one < 9:
+                                if moisture_one < 9 and moisture_hund < 1:
                                     moisture_one += 1
-                            elif (text == "D_thous"):
-                                if moisture_thous > 0:
-                                  moisture_thous -= 1
                             elif (text == "D_hund"):
                                 if moisture_hund > 0:
                                     moisture_hund -= 1
@@ -656,7 +687,7 @@ while code_run:
                                 if (interval_time_w_one < 9):
                                     interval_time_w_one += 1
                             elif (text == "U_w_unit"):
-                                if (interval_w_time_selected_tent < 3):
+                                if (interval_w_time_selected_tent < 3 and ((interval_w_time_selected_tent + 1) <= interval_b_time_selected_tent)):
                                     interval_w_time_selected_tent += 1
                             elif (text == "U_b_ten"):
                                 if (interval_time_b_ten < 5):
@@ -668,23 +699,44 @@ while code_run:
                                 if (interval_b_time_selected_tent < 3):
                                     interval_b_time_selected_tent += 1
                             elif (text == "D_w_ten"):
-                                if (interval_time_w_ten > 0):
+                                if (interval_time_w_ten > 0 and (10*interval_time_w_ten + interval_time_w_one) - 10 > 0):
                                     interval_time_w_ten -= 1
                             elif (text == "D_w_one"):
-                                if (interval_time_w_one > 0):
+                                if (interval_time_w_one > 0 and (10*interval_time_w_ten + interval_time_w_one) - 1 > 0):
                                     interval_time_w_one -= 1
                             elif (text == "D_w_unit"):
                                 if (interval_w_time_selected_tent > 0):
                                     interval_w_time_selected_tent -= 1
-                            elif (text == "D_b_ten"):
+                            elif (text == "D_b_ten" and (10*interval_time_b_ten + interval_time_b_one) - 10 > 0):
                                 if (interval_time_b_ten > 0):
                                     interval_time_b_ten -= 1
                             elif (text == "D_b_one"):
-                                if (interval_time_b_one > 0):
+                                if (interval_time_b_one > 0 and (10*interval_time_b_ten + interval_time_b_one) - 1 > 0):
                                     interval_time_b_one -= 1
                             elif (text == "D_b_unit"):
-                                if (interval_b_time_selected_tent > 0):
+                                if (interval_b_time_selected_tent > 0  and (interval_w_time_selected_tent <= (interval_b_time_selected_tent - 1))):
                                     interval_b_time_selected_tent -= 1
+                    
+                    # The time for each watering is just the watering time that the user specifies
+                    water_time_sec = 10*interval_time_w_ten + interval_time_w_one
+                    if interval_w_time_selected > 0:
+                        water_time_sec *= 60
+                    if interval_w_time_selected > 1:
+                        water_time_sec *= 60
+                    if interval_w_time_selected > 2:
+                        water_time_sec *= 24
+
+                    # The time between waterings is equal to the "every ___" time minus the time we want to water for
+                    # For example, if we want to water the plant for 1 second every 5 seconds, we would
+                    # water for 1 second, wait for 4 seconds, water for 1 second, wait for 4 seconds, etc.
+                    between_time_sec = 10*interval_time_b_ten + interval_time_b_one
+                    if interval_b_time_selected > 0:
+                        between_time_sec *= 60
+                    if interval_b_time_selected > 1:
+                        between_time_sec *= 60
+                    if interval_b_time_selected > 2:
+                        between_time_sec *= 24
+                    between_time_sec -= water_time_sec
 
 # Nicely end the GPIO stuff
 GPIO.cleanup()
