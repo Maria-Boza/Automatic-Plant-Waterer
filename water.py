@@ -66,6 +66,10 @@ pwm26.start(20)
 # Keep track of if we're currently watering the plant
 currently_watering = False
 
+# Keep track of the time that we last started and stopped the water
+last_water_start = time.localtime(time.time())
+last_water_end = time.localtime(time.time())
+
 # Start water function
 def start_water():
 
@@ -75,6 +79,10 @@ def start_water():
     # Update variable to reflect we're currently watering
     global currently_watering
     currently_watering = True
+
+    # Update the last water start time
+    global last_water_start
+    last_water_start = time.localtime(time.time())
 
     # Print
     print("Water Started")
@@ -88,6 +96,10 @@ def stop_water():
     # Update variable to reflect we're not currently watering
     global currently_watering
     currently_watering = False
+
+    # Update the last water stop time
+    global last_water_end
+    last_water_end = time.localtime(time.time())
 
     # Print
     print("Water Stopped")
@@ -111,9 +123,6 @@ GPIO.add_event_detect(27, GPIO.FALLING, callback = GPIO27_callback, bouncetime =
 #########################################################################################################
 # Watering Modes
 #########################################################################################################
-
-last_water_start = time.localtime(time.time())
-last_water_end   = time.localtime(time.time() + 1000)
 
 schedule_type = ["Manual", "Moisture Sensor", "Intervals"]
 schedule_selected = 0
@@ -142,7 +151,7 @@ def get_sensor_values():
 #########################################################################################################
 
 # Home screen buttons
-home_buttons = {'Start/Stop Water':(width/4, 220), 'Edit Schedule':(3*width/4, 220)}
+home_buttons = {'Start/Stop Water':(int(width/4), 220), 'Edit Schedule':(int(3*width/4), 220)}
 home_buttons_rect = {}
 
 # Display the GUI homepage (screen 0)
@@ -152,53 +161,60 @@ def display_home():
     screen.fill(black)
 
     # Display moisture level
-    moisture_text = "Soil Moisture: " + str(moisture)
+    moisture_text = "Soil Moisture: " + str(moisture) + "%"
     moisture_text_surface = body.render(moisture_text, True, white)
-    moisture_rect = moisture_text_surface.get_rect(center = (width/2, 15))
+    moisture_rect = moisture_text_surface.get_rect(center = (int(width/2), 15))
     screen.blit(moisture_text_surface, moisture_rect)
 
     # Display temperature
     temp_text = "Air Temperature: " + str(temp) + "° F"
     temp_text_surface = body.render(temp_text, True, white)
-    temp_rect = temp_text_surface.get_rect(center = (width/2, 40))
+    temp_rect = temp_text_surface.get_rect(center = (int(width/2), 40))
     screen.blit(temp_text_surface, temp_rect)
 
     # Display humidity
     humidity_text = "Humidity: " + str(humidity) + "%"
     humidity_text_surface = body.render(humidity_text, True, white)
-    humidity_rect = humidity_text_surface.get_rect(center = (width/2, 65))
+    humidity_rect = humidity_text_surface.get_rect(center = (int(width/2), 65))
     screen.blit(humidity_text_surface, humidity_rect)
 
     # Display sunlight
     sunlight_text = "Sunlight Today: " + str(sunlight) + " hours"
     sunlight_text_surface = body.render(sunlight_text, True, white)
-    sunlight_rect = sunlight_text_surface.get_rect(center = (width/2, 90))
+    sunlight_rect = sunlight_text_surface.get_rect(center = (int(width/2), 90))
     screen.blit(sunlight_text_surface, sunlight_rect)
 
     # Display time the plant was last watered header
     water_header_text = "Last Watered"
     water_header_text_surface = header.render(water_header_text, True, white)
-    water_header_rect = water_header_text_surface.get_rect(center = (width/2, 120))
+    water_header_rect = water_header_text_surface.get_rect(center = (int(width/2), 120))
     screen.blit(water_header_text_surface, water_header_rect)
 
     # Display time the plant was last watered
-    last_water_start_text = str(last_water_start[1]) + "/" + str(last_water_start[2]) + " " + str((last_water_start[3], last_water_start[3] - 12)[last_water_start[3] > 12]) + (":", ":0")[last_water_start[4] < 10] + str(last_water_start[4]) + (" am", " pm")[last_water_start[3] > 12]
-    last_water_end_text = str(last_water_end[1]) + "/" + str(last_water_end[2]) + " " + str((last_water_end[3], last_water_end[3] - 12)[last_water_end[3] > 12]) + (":", ":0")[last_water_end[4] < 10] + str(last_water_end[4]) + (" am", " pm")[last_water_end[3] > 12]
-    water_text = last_water_start_text + " - " + last_water_end_text
-    water_text_surface = body.render(water_text, True, white)
-    water_rect = water_text_surface.get_rect(center = (width/2, 140))
-    screen.blit(water_text_surface, water_rect)
+    if not currently_watering:
+        last_water_start_text = str(last_water_start[1]) + "/" + str(last_water_start[2]) + " " + str((last_water_start[3], last_water_start[3] - 12)[last_water_start[3] > 12]) + (":", ":0")[last_water_start[4] < 10] + str(last_water_start[4]) + (" am", " pm")[last_water_start[3] > 12]
+        last_water_end_text = str(last_water_end[1]) + "/" + str(last_water_end[2]) + " " + str((last_water_end[3], last_water_end[3] - 12)[last_water_end[3] > 12]) + (":", ":0")[last_water_end[4] < 10] + str(last_water_end[4]) + (" am", " pm")[last_water_end[3] > 12]
+        water_text = last_water_start_text + " - " + last_water_end_text
+        water_text_surface = body.render(water_text, True, white)
+        water_rect = water_text_surface.get_rect(center = (int(width/2), 140))
+        screen.blit(water_text_surface, water_rect)
+    # If we're currently watering, it doesn't make sense to display times, so just display that we're currently watering
+    else:
+        water_text = "Currently Watering"
+        water_text_surface = body.render(water_text, True, white)
+        water_rect = water_text_surface.get_rect(center = (int(width/2), 140))
+        screen.blit(water_text_surface, water_rect)
 
     # Display the watering schedule header
     schedule_header_text = "Current Watering Schedule"
     schedule_header_text_surface = header.render(schedule_header_text, True, white)
-    schedule_header_rect = schedule_header_text_surface.get_rect(center = (width/2, 170))
+    schedule_header_rect = schedule_header_text_surface.get_rect(center = (int(width/2), 170))
     screen.blit(schedule_header_text_surface, schedule_header_rect)
 
     # Display the current watering schedule
-    schedule_text = (("Water for " + str(interval_w_time) + " " + str(interval_units[interval_w_time_selected]) + " every " + str(interval_b_time) + " " + str(interval_units[interval_b_time_selected]), "Water when soil moisture < " + str(desired_moisture))[schedule_selected == 1], schedule_type[0])[schedule_selected == 0]
+    schedule_text = (("Water for " + str(interval_w_time) + " " + str(interval_units[interval_w_time_selected]) + " every " + str(interval_b_time) + " " + str(interval_units[interval_b_time_selected]), "Water when soil moisture < " + str(desired_moisture) + "%")[schedule_selected == 1], schedule_type[0])[schedule_selected == 0]
     schedule_text_surface = body.render(schedule_text, True, white)
-    schedule_rect = schedule_text_surface.get_rect(center = (width/2, 190))
+    schedule_rect = schedule_text_surface.get_rect(center = (int(width/2), 190))
     screen.blit(schedule_text_surface, schedule_rect)
 
     # Display the buttons
@@ -218,7 +234,7 @@ def display_home():
 # GUI Select Mode Screen
 #########################################################################################################
 
-control_buttons = {'Next':(width/4, 220), 'Cancel':(3*width/4, 220)}
+control_buttons = {'Next':(int(width/4), 220), 'Cancel':(int(3*width/4), 220)}
 control_buttons_rect = {}
 
 sched_buttons = {'Manual':(30, 10), 'Moisture':(30, 88), 'Intervals':(30, 150)}
@@ -283,7 +299,7 @@ def display_set_schedule1():
 # GUI Set Values for Selected Mode Screen
 #########################################################################################################
 
-control_buttons2 = {"Set":(width/4, 220), "Back":(2*width/4, 220), "Cancel":(3*width/4, 220)}
+control_buttons2 = {"Set":(int(width/4), 220), "Back":(int(2*width/4), 220), "Cancel":(int(3*width/4), 220)}
 control_buttons2_rect = {}
 
 arrow_buttons = {"U_thous":((139,105), (142,100), (145,105)), "U_hund":((151,105), (154,100), (157,105)), 
@@ -326,7 +342,7 @@ def display_set_schedule2():
 
     # Display header for type of schedule user chose
     sched_header_surface = header.render((("Interval Mode","Moisture Sensing Mode")[moisture_selected],"Manual Mode")[manual_selected], True, white)
-    screen.blit(sched_header_surface, sched_header_surface.get_rect(center = (width/2, 20)))
+    screen.blit(sched_header_surface, sched_header_surface.get_rect(center = (int(width/2), 20)))
 
     # If user selected manual mode, nothing more for them to do. Give brief message
     if manual_selected:
@@ -337,13 +353,13 @@ def display_set_schedule2():
         manual_sel5_surface = body.render("Click back to select a different mode.", True, white)
         manual_sel6_surface = body.render("Click cancel to return to the homescreen", True, white)
         manual_sel7_surface = body.render("and discard all changes.", True, white)
-        screen.blit(manual_sel1_surface, manual_sel1_surface.get_rect(center = (width/2, 50)))
-        screen.blit(manual_sel2_surface, manual_sel2_surface.get_rect(center = (width/2, 70)))
-        screen.blit(manual_sel3_surface, manual_sel3_surface.get_rect(center = (width/2, 90)))
-        screen.blit(manual_sel4_surface, manual_sel4_surface.get_rect(center = (width/2, 130)))
-        screen.blit(manual_sel5_surface, manual_sel5_surface.get_rect(center = (width/2, 150)))
-        screen.blit(manual_sel6_surface, manual_sel6_surface.get_rect(center = (width/2, 170)))
-        screen.blit(manual_sel7_surface, manual_sel7_surface.get_rect(center = (width/2, 185)))
+        screen.blit(manual_sel1_surface, manual_sel1_surface.get_rect(center = (int(width/2), 50)))
+        screen.blit(manual_sel2_surface, manual_sel2_surface.get_rect(center = (int(width/2), 70)))
+        screen.blit(manual_sel3_surface, manual_sel3_surface.get_rect(center = (int(width/2), 90)))
+        screen.blit(manual_sel4_surface, manual_sel4_surface.get_rect(center = (int(width/2), 130)))
+        screen.blit(manual_sel5_surface, manual_sel5_surface.get_rect(center = (int(width/2), 150)))
+        screen.blit(manual_sel6_surface, manual_sel6_surface.get_rect(center = (int(width/2), 170)))
+        screen.blit(manual_sel7_surface, manual_sel7_surface.get_rect(center = (int(width/2), 185)))
 
     # If user selected moisture mode, prompt for desired moisture level
     elif moisture_selected:
@@ -354,13 +370,13 @@ def display_set_schedule2():
         moisture_sel5_surface = body.render("Click back to select a different mode.", True, white)
         moisture_sel6_surface = body.render("Click cancel to return to the homescreen", True, white)
         moisture_sel7_surface = body.render("and discard all changes.", True, white)
-        screen.blit(moisture_sel1_surface, moisture_sel1_surface.get_rect(center = (width/2, 50)))
-        screen.blit(moisture_sel2_surface, moisture_sel2_surface.get_rect(center = (width/2, 70)))
-        screen.blit(moisture_sel3_surface, moisture_sel3_surface.get_rect(center = (width/2, 90)))
-        screen.blit(moisture_sel4_surface, moisture_sel4_surface.get_rect(center = (width/2, 130)))
-        screen.blit(moisture_sel5_surface, moisture_sel5_surface.get_rect(center = (width/2, 150)))
-        screen.blit(moisture_sel6_surface, moisture_sel6_surface.get_rect(center = (width/2, 170)))
-        screen.blit(moisture_sel7_surface, moisture_sel7_surface.get_rect(center = (width/2, 185)))
+        screen.blit(moisture_sel1_surface, moisture_sel1_surface.get_rect(center = (int(width/2), 50)))
+        screen.blit(moisture_sel2_surface, moisture_sel2_surface.get_rect(center = (int(width/2), 70)))
+        screen.blit(moisture_sel3_surface, moisture_sel3_surface.get_rect(center = (int(width/2), 90)))
+        screen.blit(moisture_sel4_surface, moisture_sel4_surface.get_rect(center = (int(width/2), 130)))
+        screen.blit(moisture_sel5_surface, moisture_sel5_surface.get_rect(center = (int(width/2), 150)))
+        screen.blit(moisture_sel6_surface, moisture_sel6_surface.get_rect(center = (int(width/2), 170)))
+        screen.blit(moisture_sel7_surface, moisture_sel7_surface.get_rect(center = (int(width/2), 185)))
 
         # Diplay the number control arrows
         for label, tri_pos in arrow_buttons.items():
@@ -390,12 +406,12 @@ def display_set_schedule2():
         interval_sel4_surface = body.render("Click back to select a different mode.", True, white)
         interval_sel5_surface = body.render("Click cancel to return to the homescreen", True, white)
         interval_sel6_surface = body.render("and discard all changes.", True, white)
-        screen.blit(interval_sel1_surface, interval_sel1_surface.get_rect(center = (width/2, 50)))
-        screen.blit(interval_sel2_surface, interval_sel2_surface.get_rect(center = (width/2, 70)))
-        screen.blit(interval_sel3_surface, interval_sel3_surface.get_rect(center = (width/2, 130)))
-        screen.blit(interval_sel4_surface, interval_sel4_surface.get_rect(center = (width/2, 150)))
-        screen.blit(interval_sel5_surface, interval_sel5_surface.get_rect(center = (width/2, 170)))
-        screen.blit(interval_sel6_surface, interval_sel6_surface.get_rect(center = (width/2, 185)))
+        screen.blit(interval_sel1_surface, interval_sel1_surface.get_rect(center = (int(width/2), 50)))
+        screen.blit(interval_sel2_surface, interval_sel2_surface.get_rect(center = (int(width/2), 70)))
+        screen.blit(interval_sel3_surface, interval_sel3_surface.get_rect(center = (int(width/2), 130)))
+        screen.blit(interval_sel4_surface, interval_sel4_surface.get_rect(center = (int(width/2), 150)))
+        screen.blit(interval_sel5_surface, interval_sel5_surface.get_rect(center = (int(width/2), 170)))
+        screen.blit(interval_sel6_surface, interval_sel6_surface.get_rect(center = (int(width/2), 185)))
 
         interval_sel7_surface = body.render(interval_units[interval_w_time_selected_tent], True, white)
         screen.blit(interval_sel7_surface, interval_sel7_surface.get_rect(center = (100, 70)))
