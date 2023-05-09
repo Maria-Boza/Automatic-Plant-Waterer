@@ -2,9 +2,23 @@
 
 # How to create your own
 
-This project was to create an automatic waterer for a plant. It consists of 4 differnet sensors and many more parts. Python was used to code all the sensor readings and what is being displayed.
+## Project overview
 
-## Electronic Parts
+This is how to create an automatic waterer for a plant. It consists of 4 differnet sensors and uses a Raspberry Pi 4 to run all the code. 
+
+## Introduction
+
+This final project was created by Maria Boza(mib57) & Ashley Heckman(agh93) for ECE 5725 final project. The project has been our own implementation of a planter that is a bit more electronic. We started with the brains which is the Raspberry Pi 4 that has been used all semester to work on our labs. It has 4 different sensors, moister, humidity, temperature, and light. Python was used to code all the sensor readings as what is being displayed. This project is greared towards new plant owners who don't know much about plants and would like the help. Another way our product can be used is to monitor plants when a human is not able to water it. 
+
+## Design and testing 
+
+## Results
+
+## Conclusion
+
+## Parts list
+
+### Electronic Parts
 * Raspberry Pi 4 (RPi)
   
   Basis of our project. It is the brains of the operation and controls everything
@@ -33,7 +47,7 @@ This project was to create an automatic waterer for a plant. It consists of 4 di
   
   Used to create live feed of the plant
   
-## Other Parts
+### Other Parts
 * Power supply
 * Breadboard
 * Tubing
@@ -52,6 +66,7 @@ This project was to create an automatic waterer for a plant. It consists of 4 di
 
 Here is a video of our project working and explained
 
+## Code
 
 ## References
 
