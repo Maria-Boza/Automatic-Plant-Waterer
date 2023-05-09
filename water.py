@@ -59,6 +59,9 @@ GPIO.setup(5,GPIO.OUT)
 GPIO.output(5, GPIO.LOW)
 GPIO.setup(6,GPIO.OUT)
 GPIO.output(6, GPIO.LOW)
+# sunglight sensor
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(sunlight_pin, GPIO.IN)
 
 # PWM Instance
 GPIO.setup(26, GPIO.OUT)
@@ -147,6 +150,9 @@ pm.led_off()
 
 # Setup the sunlight sensor
 sunlight = 0
+##### Needs to run constantly######
+if(GPIO.input(sunlight_pin))
+   sunlight++
 
 # Setup the camera
 
@@ -174,7 +180,10 @@ def display_home():
     humidity = round(pm.get_humidity())
 
     # Get the sunlight value
-
+    
+    #Count until the pin goes high
+    while (GPIO.input(sunlight_pin) == GPIO.LOW):
+        sunlight += 1
 
     # Display moisture level
     moisture_text = "Soil Moisture: " + str(moisture) + "%"
