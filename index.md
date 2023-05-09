@@ -20,7 +20,7 @@ The current humidity in the air is:
 
 ## Sunlight
 
-The current amount of sunlight revieved is:
+The current amount of sunlight recieved is:
 
 ## Current Watering Cycle
 
