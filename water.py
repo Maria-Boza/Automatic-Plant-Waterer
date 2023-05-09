@@ -59,9 +59,6 @@ GPIO.setup(5,GPIO.OUT)
 GPIO.output(5, GPIO.LOW)
 GPIO.setup(6,GPIO.OUT)
 GPIO.output(6, GPIO.LOW)
-# sunglight sensor
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(sunlight_pin, GPIO.IN)
 
 # PWM Instance
 GPIO.setup(26, GPIO.OUT)
@@ -128,7 +125,6 @@ code_run = True
 def GPIO27_callback(channel):
     global code_run
     code_run = False
-    stop_water()
 
 GPIO.add_event_detect(27, GPIO.FALLING, callback = GPIO27_callback, bouncetime = 300)
 
@@ -140,7 +136,9 @@ schedule_type = ["Manual", "Moisture Sensor", "Intervals"]
 schedule_selected = 0
 desired_moisture = 0
 
+#########################################################################################################
 # Setup the soil moisture/temperature/humidity sensor
+#########################################################################################################
 moisture = 0
 temp = 0
 humidity = 0
@@ -148,17 +146,11 @@ humidity = 0
 pm = PlantMonitor()
 pm.led_off()
 
-# Setup the sunlight sensor
-sunlight = 0
-##### Needs to run constantly######
-if(GPIO.input(sunlight_pin))
-   sunlight++
+#########################################################################################################
+# Setup the light sensor
+#########################################################################################################
+light = 0
 
-# Setup the camera
-
-# Get the sensor readings
-def get_sensor_values():
-    return
 
 #########################################################################################################
 # GUI Homescreen
@@ -173,17 +165,6 @@ def display_home():
     
     # Erase everything on the screen
     screen.fill(black)
-
-    # Get the moisture, temperature, and humidity values
-    moisture = round(pm.get_wetness())
-    temp = round(9*pm.get_temp()/5 + 32)
-    humidity = round(pm.get_humidity())
-
-    # Get the sunlight value
-    
-    #Count until the pin goes high
-    while (GPIO.input(sunlight_pin) == GPIO.LOW):
-        sunlight += 1
 
     # Display moisture level
     moisture_text = "Soil Moisture: " + str(moisture) + "%"
@@ -203,11 +184,11 @@ def display_home():
     humidity_rect = humidity_text_surface.get_rect(center = (int(width/2), 65))
     screen.blit(humidity_text_surface, humidity_rect)
 
-    # Display sunlight
-    sunlight_text = "Sunlight Today: " + str(sunlight) + " hours"
-    sunlight_text_surface = body.render(sunlight_text, True, white)
-    sunlight_rect = sunlight_text_surface.get_rect(center = (int(width/2), 90))
-    screen.blit(sunlight_text_surface, sunlight_rect)
+    # Display light
+    light_text = "Light: " + str(light) + " lux"
+    light_text_surface = body.render(light_text, True, white)
+    light_rect = light_text_surface.get_rect(center = (int(width/2), 90))
+    screen.blit(light_text_surface, light_rect)
 
     # Display time the plant was last watered header
     water_header_text = "Last Watered"
@@ -577,32 +558,32 @@ moisture_levels = [(0,20), (21,40), (41,60), (61,80)]
 
 Flowers1 = [("Agave", 0, 1), ("Aster", 1), ("Astilbe", 2), ("Big Blue Stem", 1), ("Bleeding Heart", 2),
            ("Butterfly Weed", 1), ("Cactus", 0, 1), ("Catmint", 1), ("Christmas Fern", 1), ("Coneflower", 1),
-           ("Daffodil", 1, 2), ("Dalia", 1, 2), ("Daylilly", 1, 2), ("Gaillardia", 1), ("Heaths/Heathers", 1),
+           ("Daffodil", 1, 2), ("Dalia", 1, 2), ("Daylilly", 1, 2), ("Gaillardia", 1), ("Heath/Heather", 1),
            ("Hellebores", 2), ("Hosta", 1, 2), ("Hyssop", 1), ("Iris", 1, 2), ("Ironweed", 2), ("Jack In Pulpits", 2),
            ("Joe-Pye Weed", 2), ("Lavendar", 1), ("Lemon Balm", 1)]
 Flowers2 = [("Lily", 1, 2), ("Lobellia", 2, 3), ("Lupine", 2),
            ("Marigold", 1), ("Marsh Marigold", 3), ("May Apple", 2), ("Meadow Rue", 2, 3), ("Monarda", 1),
            ("Ornamental Grasses", 1), ("Peony", 1, 2), ("Petunia", 1), ("Poppy", 1),
-           ("Purple Coneflower", 1), ("Queen of the Prairie", 2), ("Red Milkweed", 2), ("Sedges", 1, 2, 3),
+           ("Purple Coneflower", 1), ("Queen of the Prairie", 2), ("Red Milkweed", 2), ("Sedge", 1, 2, 3),
            ("Sedum", 0, 1), ("Pansy", 1, 2), ("Tulip", 1, 2), ("Violet", 1, 2), ("Yarrow", 0, 1), ("Yucca", 0, 1),
            ("Zinnia", 1)]
 flower1_rect = {}
 flower2_rect = {}
 
-Fruits = [("Apple", 1, 2), ("Grapes", 1, 2), ("Fig", 1, 2), ("Peach", 1, 2), ("Pear", 1, 2),
+Fruits = [("Apple", 1, 2), ("Grape", 1, 2), ("Fig", 1, 2), ("Peach", 1, 2), ("Pear", 1, 2),
           ("Raspberry", 1, 2), ("Strawberry", 1, 2), ("Blackberry", 1, 2), ("Blueberry", 2), ("Cranberry", 3)]
 fruit_rect = {}
 
 TreesShrubs1 = [("Alpine Current", 1), ("American Filbert", 1, 2), ("American Holly", 1), ("Amur Privet", 1),
-               ("Arborvitae", 1), ("Azealeas", 1, 2), ("Bald Cypress", 1, 2, 3), ("Barberry", 1), ("Birch", 2),
+               ("Arborvitae", 1), ("Azalea", 1, 2), ("Bald Cypress", 1, 2, 3), ("Barberry", 1), ("Birch", 2),
                ("Black Tupelo", 1), ("Chinese Juniper", 1), ("Clematis", 1, 2), ("Common Boxwood", 1),
                ("Common Elderberry", 2), ("Common Lilac", 1), ("Crab Apple", 1), ("Crape Myrtle", 1, 2),
                ("Dawn Redwood", 2, 3), ("Dogwood", 2, 3), ("Eastern Red Cedar", 1), ("Elderberry", 1, 2, 3),
                ("Elm", 1, 2), ("Frazier Fir", 1), ("Gardenia", 1)]
 TreesShrubs2 = [("Ginkgo", 1), ("Hawthorn", 1), ("Holly", 1),
                ("Honey Locust", 1), ("Horse Chestnut", 1), ("Hydragea", 2), ("Juniper", 1), ("Lilac", 1), ("Maple", 1),
-               ("Mockorange", 1), ("New Jersey Tea", 1), ("Oaks", 1), ("Ohio Buckeye", 1), ("Potentilla", 0, 1),
-               ("Red Cedar", 2), ("Red Twig Dogwood", 2), ("Rhodendron", 2), ("Roses", 1), ("Rugosa Rose", 0, 1),
+               ("Mockorange", 1), ("New Jersey Tea", 1), ("Oak", 1), ("Ohio Buckeye", 1), ("Potentilla", 0, 1),
+               ("Red Cedar", 2), ("Red Twig Dogwood", 2), ("Rhodendron", 2), ("Rose", 1), ("Rugosa Rose", 0, 1),
                ("Saucer Magnolia", 1), ("Serviceberry", 1, 2), ("Silver Maple", 1, 2), ("Spirea", 1), ("Spruce", 1)]
 TreesShrubs3 = [("Sugar Maple", 1), ("Swamp White Oak", 3), ("Sweetshrub", 1, 2), ("Tamarac/Larch", 2, 3), ("White Fir", 1),
                ("White Pine", 2), ("Willow", 2, 3)]
@@ -613,79 +594,37 @@ tree3_rect = {}
 sum = 0
 num = 0
 for flower in Flowers1:
+    sum += (moisture_levels[flower[1]][0] + moisture_levels[flower[len(flower)-1]][1])/2
     num += 1
-    sum += (moisture_levels[flower[1]][0] + moisture_levels[flower[1]][1])/2
-    if len(flower) > 2:
-        sum += (moisture_levels[flower[2]][0] + moisture_levels[flower[2]][1])/2
-    if len(flower) > 3:
-        sum += (moisture_levels[flower[3]][0] + moisture_levels[flower[3]][1])/2
-    if len(flower) > 4:
-        sum += (moisture_levels[flower[4]][0] + moisture_levels[flower[4]][1])/2
-
 for flower in Flowers2:
+    sum += (moisture_levels[flower[1]][0] + moisture_levels[flower[len(flower)-1]][1])/2
     num += 1
-    sum += (moisture_levels[flower[1]][0] + moisture_levels[flower[1]][1])/2
-    if len(flower) > 2:
-        sum += (moisture_levels[flower[2]][0] + moisture_levels[flower[2]][1])/2
-    if len(flower) > 3:
-        sum += (moisture_levels[flower[3]][0] + moisture_levels[flower[3]][1])/2
-    if len(flower) > 4:
-        sum += (moisture_levels[flower[4]][0] + moisture_levels[flower[4]][1])/2
 
-generalFlower = sum / num
-
+generalFlower = int(round(sum / num))
 print(generalFlower)
 
 sum = 0
 num = 0
 for fruit in Fruits:
+    sum += (moisture_levels[fruit[1]][0] + moisture_levels[fruit[len(fruit)-1]][1])/2
     num += 1
-    sum += (moisture_levels[fruit[1]][0] + moisture_levels[fruit[1]][1])/2
-    if len(fruit) > 2:
-        sum += (moisture_levels[fruit[2]][0] + moisture_levels[fruit[2]][1])/2
-    if len(fruit) > 3:
-        sum += (moisture_levels[fruit[3]][0] + moisture_levels[fruit[3]][1])/2
-    if len(fruit) > 4:
-        sum += (moisture_levels[fruit[4]][0] + moisture_levels[fruit[4]][1])/2
 
-generalFruit = sum / num
-
+generalFruit = int(round(sum / num))
 print(generalFruit)
 
 sum = 0
 num = 0
 for tree in TreesShrubs1:
+    sum += (moisture_levels[tree[1]][0] + moisture_levels[tree[len(tree)-1]][1])/2
     num += 1
-    sum += (moisture_levels[tree[1]][0] + moisture_levels[tree[1]][1])/2
-    if len(tree) > 2:
-        sum += (moisture_levels[tree[2]][0] + moisture_levels[tree[2]][1])/2
-    if len(tree) > 3:
-        sum += (moisture_levels[tree[3]][0] + moisture_levels[tree[3]][1])/2
-    if len(tree) > 4:
-        sum += (moisture_levels[tree[4]][0] + moisture_levels[tree[4]][1])/2
-
 for tree in TreesShrubs2:
+    sum += (moisture_levels[tree[1]][0] + moisture_levels[tree[len(tree)-1]][1])/2
     num += 1
-    sum += (moisture_levels[tree[1]][0] + moisture_levels[tree[1]][1])/2
-    if len(tree) > 2:
-        sum += (moisture_levels[tree[2]][0] + moisture_levels[tree[2]][1])/2
-    if len(tree) > 3:
-        sum += (moisture_levels[tree[3]][0] + moisture_levels[tree[3]][1])/2
-    if len(tree) > 4:
-        sum += (moisture_levels[tree[4]][0] + moisture_levels[tree[4]][1])/2
-
 for tree in TreesShrubs3:
+    sum += (moisture_levels[tree[1]][0] + moisture_levels[tree[len(tree)-1]][1])/2
     num += 1
-    sum += (moisture_levels[tree[1]][0] + moisture_levels[tree[1]][1])/2
-    if len(tree) > 2:
-        sum += (moisture_levels[tree[2]][0] + moisture_levels[tree[2]][1])/2
-    if len(tree) > 3:
-        sum += (moisture_levels[tree[3]][0] + moisture_levels[tree[3]][1])/2
-    if len(tree) > 4:
-        sum += (moisture_levels[tree[4]][0] + moisture_levels[tree[4]][1])/2
 
-generalTreeShrub = sum / num
-
+generalTreeShrub = int(round(sum / num))
 print(generalTreeShrub)
 
 #########################################################################################################
@@ -1024,6 +963,124 @@ def display_tree3():
     pygame.display.flip()
 
 #########################################################################################################
+# Display moisture value for plant screen
+#########################################################################################################
+
+specific_buttons = {"Set":(int(width/8), 220), "Edit":(int(3*width/8), 220), "Back":(int(5*width/8), 220), "Cancel":(int(7*width/8), 220)}
+specific_buttons_rect = {}
+temp_desired_val = 0
+
+def display_specific():
+
+    # Erase everything on the screen
+    screen.fill(black)
+
+    # Display header for type of schedule user chose
+    sched_header_surface = header.render("Moisture Sensing Mode", True, white)
+    screen.blit(sched_header_surface, sched_header_surface.get_rect(center = (int(width/2), 20)))
+
+    # Calculate the bounds and average values within those bounds
+    lower_val = 0
+    upper_val = 0
+    if flower_selected:
+        for flower in Flowers1:
+            if flower[0] == flower_sel:
+                lower_val = moisture_levels[flower[1]][0]
+                upper_val = moisture_levels[flower[len(flower)-1]][1]
+        for flower in Flowers2:
+            if flower[0] == flower_sel:
+                lower_val = moisture_levels[flower[1]][0]
+                upper_val = moisture_levels[flower[len(flower)-1]][1]
+    elif fruit_selected:
+        for fruit in Fruits:
+            if fruit[0] == fruit_sel:
+                lower_val = moisture_levels[fruit[1]][0]
+                upper_val = moisture_levels[fruit[len(fruit)-1]][1]
+    elif tree_selected:
+        for tree in TreesShrubs1:
+            if tree[0] == tree_sel:
+                lower_val = moisture_levels[tree[1]][0]
+                upper_val = moisture_levels[tree[len(tree)-1]][1]
+        for tree in TreesShrubs2:
+            if tree[0] == tree_sel:
+                lower_val = moisture_levels[tree[1]][0]
+                upper_val = moisture_levels[tree[len(tree)-1]][1]
+        for tree in TreesShrubs3:
+            if tree[0] == tree_sel:
+                lower_val = moisture_levels[tree[1]][0]
+                upper_val = moisture_levels[tree[len(tree)-1]][1]
+
+    global temp_desired_val
+    temp_desired_val = int(round((lower_val + upper_val)/2))
+
+    # Display message showing recommended value for that plant
+    moisture_m1 = "The recommended soil moisture for a"
+    moisture_m2 = ((tree_sel, flower_sel)[flower_selected], fruit_sel)[fruit_selected] + " is " + str(temp_desired_val) + "%"
+    moisture_m1_surface = body.render(moisture_m1, True, white)
+    moisture_m2_surface = body.render(moisture_m2, True, white)
+    moisture_m3_surface = body.render("Click set to proceed with recommended value.", True, white)
+    moisture_m4_surface = body.render("Click edit to edit this value.", True, white)
+    moisture_m5_surface = body.render("Click back to go back to plant selection.", True, white)
+    moisture_m6_surface = body.render("Click cancel to cancel all edits and return", True, white)
+    moisture_m7_surface = body.render("to the homescreen.", True, white)
+    screen.blit(moisture_m1_surface, moisture_m1_surface.get_rect(center = (int(width/2), 45)))
+    screen.blit(moisture_m2_surface, moisture_m2_surface.get_rect(center = (int(width/2), 65)))
+    screen.blit(moisture_m3_surface, moisture_m3_surface.get_rect(center = (int(width/2), 90)))
+    screen.blit(moisture_m4_surface, moisture_m4_surface.get_rect(center = (int(width/2), 115)))
+    screen.blit(moisture_m5_surface, moisture_m5_surface.get_rect(center = (int(width/2), 140)))
+    screen.blit(moisture_m6_surface, moisture_m6_surface.get_rect(center = (int(width/2), 165)))
+    screen.blit(moisture_m7_surface, moisture_m7_surface.get_rect(center = (int(width/2), 185)))
+
+    # Display the control buttons
+    for button_text, text_pos in specific_buttons.items():
+        text_surface = body.render(button_text, True, white)
+        rect = text_surface.get_rect(center = text_pos)
+        screen.blit(text_surface, rect)
+        specific_buttons_rect[button_text] = rect
+
+    pygame.display.flip()
+
+#########################################################################################################
+# Display moisture value for general plant type screen
+#########################################################################################################
+
+def display_general():
+
+    # Erase everything on the screen
+    screen.fill(black)
+
+    # Display header for type of schedule user chose
+    sched_header_surface = header.render("Moisture Sensing Mode", True, white)
+    screen.blit(sched_header_surface, sched_header_surface.get_rect(center = (int(width/2), 20)))
+
+    # Display message showing recommended value for that plant type
+    moisture_m1 = "The recommended soil moisture for a"
+    moisture_m2 = "general " + (("tree", "flower")[flower_selected], "fruit")[fruit_selected] + " is " + str(((generalTreeShrub, generalFlower)[flower_selected], generalFruit)[fruit_selected]) + "%"
+    moisture_m1_surface = body.render(moisture_m1, True, white)
+    moisture_m2_surface = body.render(moisture_m2, True, white)
+    moisture_m3_surface = body.render("Click set to proceed with recommended value.", True, white)
+    moisture_m4_surface = body.render("Click edit to edit this value.", True, white)
+    moisture_m5_surface = body.render("Click back to go back to plant selection.", True, white)
+    moisture_m6_surface = body.render("Click cancel to cancel all edits and return", True, white)
+    moisture_m7_surface = body.render("to the homescreen.", True, white)
+    screen.blit(moisture_m1_surface, moisture_m1_surface.get_rect(center = (int(width/2), 45)))
+    screen.blit(moisture_m2_surface, moisture_m2_surface.get_rect(center = (int(width/2), 65)))
+    screen.blit(moisture_m3_surface, moisture_m3_surface.get_rect(center = (int(width/2), 90)))
+    screen.blit(moisture_m4_surface, moisture_m4_surface.get_rect(center = (int(width/2), 115)))
+    screen.blit(moisture_m5_surface, moisture_m5_surface.get_rect(center = (int(width/2), 140)))
+    screen.blit(moisture_m6_surface, moisture_m6_surface.get_rect(center = (int(width/2), 165)))
+    screen.blit(moisture_m7_surface, moisture_m7_surface.get_rect(center = (int(width/2), 185)))
+
+    # Display the control buttons
+    for button_text, text_pos in specific_buttons.items():
+        text_surface = body.render(button_text, True, white)
+        rect = text_surface.get_rect(center = text_pos)
+        screen.blit(text_surface, rect)
+        specific_buttons_rect[button_text] = rect
+
+    pygame.display.flip()
+
+#########################################################################################################
 # GUI Control
 #########################################################################################################
 
@@ -1036,7 +1093,15 @@ while code_run:
 
     if ( screen_num == 0):
 
-        # Display the homescreen
+        # Get the moisture, temperature, and humidity values
+        moisture = round(pm.get_wetness())
+        temp = round(9*pm.get_temp()/5 + 32)
+        humidity = round(pm.get_humidity())
+
+        # Get the sunlight value
+        sunlight = 0
+
+        # Display the homescreen (with the updated values)
         display_home()
 
         # Reset the schedule selected variables
@@ -1068,6 +1133,13 @@ while code_run:
                                 else:
                                   start_water()
 
+        # Water the plant for 3 seconds, wait 5 seconds, re-read moisture value, and water again if needed
+        if schedule_selected == 1:
+            if moisture < desired_moisture and not currently_watering:
+                start_water()
+            elif currently_watering and moisture > desired_moisture:
+                stop_water()
+
         if schedule_selected == 2:
             if not currently_watering:
                 if time.time() >= last_water_end + between_time_sec:
@@ -1084,6 +1156,11 @@ while code_run:
 
         # Display the select mode screen
         display_set_schedule1()
+
+        own_selected = False
+        flower_selected = False
+        fruit_selected = False
+        tree_selected = False
 
         # Check for button press. If button is pressed, perform its action
         for event in pygame.event.get():
@@ -1338,7 +1415,7 @@ while code_run:
                             elif tree_selected:
                                 screen_num = 7
                             elif own_selected:
-                                screen_num = 3
+                                screen_num = 2
                         elif (text == "Back"):
                             flower_selected = False
                             fruit_selected = False
@@ -1383,7 +1460,7 @@ while code_run:
                     if rect.collidepoint(pos):
                         if text == "Next":
                             if flower_sel != None:
-                                screen_num = 9
+                                screen_num = 10
                         elif text == "Back":
                             flower_sel = None
                             screen_num = 3
@@ -1426,10 +1503,10 @@ while code_run:
                         if text == "Next":
                             if flower_sel != None:
                                 print("Next: Advancing to specific plant page")
-                                screen_num = 9
+                                screen_num = 10
                             elif other_selected:
                                 print("Next: Advancing to general value page")
-                                screen_num = 10
+                                screen_num = 11
                         elif text == "Back":
                             flower_sel = None
                             other_selected = False
@@ -1471,10 +1548,10 @@ while code_run:
                         if text == "Next":
                             if fruit_sel != None:
                                 print("Next: Advancing to specific plant page")
-                                screen_num = 9
+                                screen_num = 10
                             elif other_selected:
                                 print("Next: Advancing to general value page")
-                                screen_num = 10
+                                screen_num = 11
                         elif text == "Back":
                             fruit_sel = None
                             other_selected = False
@@ -1622,6 +1699,98 @@ while code_run:
                             screen_num = 3
                         elif text == "Cancel":
                             screen_num = 0
+
+    ####################################################
+    # GUI Confirm Plant Moisture Value Screen
+    ####################################################
+
+    elif ( screen_num == 10 ):
+
+        # Display the general moisture value screen
+        display_specific()
+
+        # Check for button press. If button is pressed, perform its action
+        for event in pygame.event.get():
+            if ( event.type is MOUSEBUTTONUP ):
+                pos = pygame.mouse.get_pos()
+                x,y = pos
+
+                for (text, rect) in specific_buttons_rect.items():
+                    if rect.collidepoint(pos):
+                        if text == "Set":
+                            desired_moisture = temp_desired_val
+                            schedule_selected = 1
+                            screen_num = 0
+                        elif text == "Edit":
+                            moisture_hund = int((temp_desired_val / 100))
+                            moisture_ten = int((temp_desired_val / 10))
+                            moisture_one  = (temp_desired_val % 10)
+                            screen_num = 2
+                        elif text == "Back":
+                            if flower_selected:
+                                screen_num = 4
+                            elif fruit_selected:
+                                screen_num = 6
+                            elif tree_selected:
+                                screen_num = 7
+                        elif text == "Cancel":
+                            flower_selected = False
+                            fruit_selected = False
+                            tree_selected = False
+                            flower_sel = None
+                            fruit_sel = None
+                            tree_sel = None
+                            moisture_selected = False
+                            screen_num = 0
+
+    ####################################################
+    # GUI Confirm General Plant Moisture Value Screen
+    ####################################################
+   
+    elif ( screen_num == 11 ):
+
+        # Display the specific moisture value screen
+        display_general()
+
+        # Check for button press. If button is pressed, perform its action
+        for event in pygame.event.get():
+            if ( event.type is MOUSEBUTTONUP ):
+                pos = pygame.mouse.get_pos()
+                x,y = pos
+
+                for (text, rect) in specific_buttons_rect.items():
+                    if rect.collidepoint(pos):
+                        if text == "Set":
+                            working = ((generalTreeShrub, generalFlower)[flower_selected], generalFruit)[fruit_selected]
+                            desired_moisture = working
+                            schedule_selected = 1
+                            screen_num = 0
+                        elif text == "Edit":
+                            working = ((generalTreeShrub, generalFlower)[flower_selected], generalFruit)[fruit_selected]
+                            moisture_hund = int(working / 100)
+                            moisture_ten = int(working / 10)
+                            moisture_one  = (working % 10)
+                            screen_num = 2
+                        elif text == "Back":
+                            if flower_selected:
+                                screen_num = 4
+                            elif fruit_selected:
+                                screen_num = 6
+                            elif tree_selected:
+                                screen_num = 7
+                        elif text == "Cancel":
+                            flower_selected = False
+                            fruit_selected = False
+                            tree_selected = False
+                            flower_sel = None
+                            fruit_sel = None
+                            tree_sel = None
+                            moisture_selected = False
+                            screen_num = 0
+
+# Stop the water
+if currently_watering:
+    stop_water()
 
 # Nicely end the GPIO stuff
 GPIO.cleanup()
