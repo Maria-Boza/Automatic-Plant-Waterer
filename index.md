@@ -18,6 +18,10 @@ The current ambient temperature is:
 
 The current humidity in the air is: 
 
+## Sunlight
+
+The current amount of sunlight revieved is:
+
 ## Current Watering Cycle
 
 * Once a day 
