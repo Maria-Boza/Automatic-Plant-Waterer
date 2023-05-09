@@ -45,44 +45,10 @@ PAGE="""\
                 </div>
                 <div class = "main-text">
                     Check out the live camera stream to see how your plant is doing! Watch 
-                    those plants grow!
+                    those plants grow!<br>
                 </div>
                 <center><img src="stream.mjpg" width="320" height="240"></center>
-                <div id = "subtitle">
-                    Sensor Measurements
-                </div>
-                <div class = "main-text">
-                    The watering system has four measurements. The current measurements are:
-                    <ul>
-                        <li>Soil Moisture: </li>
-                        <li>Temperature: </li>
-                        <li>Humidity: </li>
-                        <li>Sunlight: </li>
-                    </ul>
-                </div>
-                <div id = "subtitle">
-                    Watering Schedule
-                </div>
-                <div class = "main-text">
-                    The plant waterer has three modes of watering:
-                    <ul>
-                        <li>Manual: The system will not automatically water the plant. The user 
-                            must manually turn the water on and off.
-                        </li>
-                        <br>
-                        <li>
-                            Moisture: The system will automatically water the plant when the soil 
-                            moisture drops below the desired level.
-                        </li>
-                        <br>
-                        <li>
-                            Intervals: The system will automatically water the plant at set intervals. 
-                            For example, water the plant for 30 seconds every other day.
-                        </li>
-                    </ul>
-                    The current watering schedule is
-                    {watering_sched[len(watering_sched) - 1]}
-                </div>
+                <br>
             </div>
         </div>
     </body>
