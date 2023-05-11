@@ -151,6 +151,34 @@ pm.led_off()
 #########################################################################################################
 light = 0
 
+def measure_light():
+
+    count = 0
+
+    # setup pin as output and direction low value
+    GPIO.setup(16, GPIO.OUT)
+    GPIO.output(16, GPIO.LOW)
+
+    time.sleep(0.1)
+
+    # setup pin as input and wait for low value
+    GPIO.setup(16, GPIO.IN)
+
+    # This takes about 1 millisecond per loop cycle
+    while (GPIO.input(16) == GPIO.LOW):
+        count += 1
+
+    # Cap count at 3000 (looks like that's the cap anyway through experimentation)
+    if count > 3000:
+        count = 3000
+
+    # Invert (so high value corresponds to more light)
+    count = 3000 - count
+
+    # Round count to nearest 50
+    count = round(count/50)*50
+    return count
+
 
 #########################################################################################################
 # GUI Homescreen
@@ -185,7 +213,7 @@ def display_home():
     screen.blit(humidity_text_surface, humidity_rect)
 
     # Display light
-    light_text = "Light: " + str(light) + " lux"
+    light_text = "Light: " + str(light)
     light_text_surface = body.render(light_text, True, white)
     light_rect = light_text_surface.get_rect(center = (int(width/2), 90))
     screen.blit(light_text_surface, light_rect)
@@ -1098,8 +1126,8 @@ while code_run:
         temp = round(9*pm.get_temp()/5 + 32)
         humidity = round(pm.get_humidity())
 
-        # Get the sunlight value
-        sunlight = 0
+        # Get the light value
+        light = measure_light()
 
         # Display the homescreen (with the updated values)
         display_home()
